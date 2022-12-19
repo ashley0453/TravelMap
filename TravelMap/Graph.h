@@ -51,6 +51,8 @@ typedef struct ArcInfo {
 int FirstAdjSpot(ALGraph G, int k, AdjSpotNodeP& p);
 int NextAdjSpot(ALGraph G, int k, AdjSpotNodeP& p);
 
+void PrintSymbol(ALGraph G);
+
 bool IsConnected(ALGraph G, int i, int j);
 Status CreatUDGGraph(ALGraph& G, SpotNode* Spots, int n, ArcInfo* arce, int e);
 Status AddSpot(ALGraph& G);
@@ -59,6 +61,8 @@ Status RemoveEdge(ALGraph& G);
 Status ReviseSpot(ALGraph& G);
 Status ReviseEdge(ALGraph& G);
 Status SpotIntroduce(ALGraph G, int k);
+
+void Clearbuffer();//Çå³ý»º³åÇø
 
 
 #endif
