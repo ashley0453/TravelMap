@@ -48,12 +48,18 @@ typedef struct ArcInfo {
     int level;
 }ArcInfo;   //存储边信息
 
+typedef struct Dijskra {
+    int PreNode;
+    int info;
+}Dijskra;
+
 int FirstAdjSpot(ALGraph G, int k, AdjSpotNodeP& p);
 int NextAdjSpot(ALGraph G, int k, AdjSpotNodeP& p);
 
 void PrintSymbol(ALGraph G);
 
-bool IsConnected(ALGraph G, int i, int j);
+bool IsDirectConnected(ALGraph G, int i, int j);
+bool IsReachable(ALGraph G, int i, int j);
 Status CreatUDGGraph(ALGraph& G, SpotNode* Spots, int n, ArcInfo* arce, int e);
 Status AddSpot(ALGraph& G);
 Status AddEdge(ALGraph& G);
@@ -61,6 +67,11 @@ Status RemoveEdge(ALGraph& G);
 Status ReviseSpot(ALGraph& G);
 Status ReviseEdge(ALGraph& G);
 Status SpotIntroduce(ALGraph G, int k);
+
+Status ShortestRoad(ALGraph G, int Start, Dijskra*& dij);
+Status MostAppealingRoad(ALGraph G, int Start, Dijskra*& dij);
+bool FindAllRoad(ALGraph G, int start, int destination, int* path, int len, int& sum);
+void OutputRoad(ALGraph G, Dijskra* dist, int Destinatin);
 
 void Clearbuffer();//清除缓冲区
 

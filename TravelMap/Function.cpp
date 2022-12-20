@@ -39,7 +39,7 @@ void PrintSymbol(ALGraph G)
     puts("\n------------------------------------");
 }
 
-bool IsConnected(ALGraph G, int i, int j)
+bool IsDirectConnected(ALGraph G, int i, int j)
 {
     if (i < 0 || j < 0 || i >= G.n || j >= G.n) {
         printf("输入数据不合法，返回主菜单\n");
@@ -53,6 +53,22 @@ bool IsConnected(ALGraph G, int i, int j)
         p = p->NextSpot;
     }
     return false;
+}
+
+bool IsReachable(ALGraph G, int i, int j)
+{
+    AdjSpotNodeP p;
+    bool Found = false;
+    G.tags[i] = VISITED;
+    if (i == j) {
+        return true;
+    }
+    for (p = G.Spots[i].FirstSpot; p && Found == false; p = p->NextSpot) {
+        if (G.tags[p->SpotSymbol]==UNVISITED) {
+            Found = IsReachable(G, p->SpotSymbol, j);
+        }
+    }
+    return Found;
 }
 
 Status CreatUDGGraph(ALGraph& G, SpotNode* Spots, int n, ArcInfo* arce, int e)
@@ -128,7 +144,7 @@ Status AddEdge(ALGraph& G)
         printf("输入数据不合法，返回主菜单\n");
         return false;
     }
-    if (IsConnected(G, i, j)) {
+    if (IsDirectConnected(G, i, j)) {
         printf("已经存在该条边\n");
         return ERROR;
     }
@@ -181,7 +197,7 @@ Status RemoveEdge(ALGraph& G)
         printf("输入数据不合法，返回主菜单\n");
         return false;
     }
-    if (!IsConnected(G, i, j)) {
+    if (!IsDirectConnected(G, i, j)) {
         printf("不存在该条边\n");
         return ERROR;
     }
@@ -264,7 +280,7 @@ Status ReviseEdge(ALGraph& G)
         printf("输入景区编号有误，请重新输入\n");
         scanf("%d %d", &SpotOne, &SpotTwo);
     }
-    if (IsConnected(G, SpotOne, SpotTwo) == false) {
+    if (IsDirectConnected(G, SpotOne, SpotTwo) == false) {
         printf("两个景区之间不存在直接相连的道路，返回主菜单\n");
         return ERROR;
     }
@@ -315,6 +331,84 @@ Status SpotIntroduce(ALGraph G, int k)
     printf("景点介绍：%s\n", G.Spots[k].Introduction);
     printf("关于本景点的介绍到此结束，感谢您的参观\n");
     return OK;
+}
+
+Status ShortestRoad(ALGraph G, int Start, Dijskra*& dij)
+{
+    dij = (Dijskra*)calloc(G.n, sizeof(Dijskra));
+    for (int i = 0; i < G.n; i++) {
+        G.tags[i] = UNSELECTED;
+        dij[i].info = INFINITY;
+    }
+    for (AdjSpotNodeP p = G.Spots[Start].FirstSpot; p; p = p->NextSpot) {
+        dij[p->SpotSymbol].PreNode = Start;
+        dij[p->SpotSymbol].info = p->Distence;
+    }
+    G.tags[Start] = SELECTED;
+    dij[Start].PreNode = -1;
+    dij[Start].info = 0;
+    for (int i = 0; i < G.n; i++) {
+        int MinDistence = INFINITY, SelectedNode = 0;
+        for (int j = 0; j < G.n; j++) {
+            if (G.tags[j] == UNSELECTED && dij[j].info < MinDistence) {
+                SelectedNode = j;
+                MinDistence = dij[j].info;
+            }
+        }
+        G.tags[SelectedNode] = SELECTED;
+        for (AdjSpotNodeP p = G.Spots[SelectedNode].FirstSpot; p; p = p->NextSpot) {
+            if (G.tags[p->SpotSymbol] == UNSELECTED && dij[SelectedNode].info + p->Distence < dij[p->SpotSymbol].info) {
+                dij[p->SpotSymbol].info = dij[SelectedNode].info + p->Distence;
+                dij[p->SpotSymbol].PreNode = SelectedNode;
+            }
+        }
+    }
+    return OK;
+}
+
+Status MostAppealingRoad(ALGraph G, int Start, Dijskra*& dij)
+{
+    return OK;
+}
+
+bool FindAllRoad(ALGraph G, int start, int des, int *path,int len, int& sum)
+{
+    if (des >= G.n || start >= G.n || start < 0 || des < 0) {
+        printf("目的地或出发地编号超出最大编号%d或小于0,查找失败\n", G.n - 1);
+        return ERROR;
+    }
+    G.tags[start] = VISITED;
+    path[len] = start;
+    len++;
+    if (start == des && len >= 0) {
+        printf("路径%d:", ++sum);
+        for (int i = 0; i < len; i++) {
+            printf("%d:%s->", G.Spots[path[i]].Symbol, G.Spots[path[i]].Name);
+
+        }
+        G.tags[start] = UNVISITED;
+        printf("\n");
+        return true;
+    }
+    for (AdjSpotNodeP p = G.Spots[start].FirstSpot; p; p = p->NextSpot) {
+        if (G.tags[p->SpotSymbol] == UNVISITED) {
+            FindAllRoad(G, p->SpotSymbol, des, path, len, sum);
+        }
+    }
+    G.tags[start] = UNVISITED;
+    len--;
+    return false;
+}
+
+void OutputRoad(ALGraph G, Dijskra* dij, int Destinatin)
+{
+    if (Destinatin > G.n) {
+        printf("目的地的编号超出最大编号%d,输出失败\n", G.n - 1);
+        return;
+    }
+    if (Destinatin == -1)return;
+    OutputRoad(G, dij, dij[Destinatin].PreNode);
+    printf("%-2d:%-6s->", G.Spots[Destinatin].Symbol, G.Spots[Destinatin].Name);
 }
 
 void Clearbuffer()

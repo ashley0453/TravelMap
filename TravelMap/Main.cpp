@@ -15,22 +15,43 @@ int main() {
 	for (int i = 0; i < 3; i++) {
 		spots[i].Symbol = i;
 	}
-	ArcInfo arcs[2];
+	ArcInfo arcs[10];
 	spots[1].Name = "a"; spots[1].Introduction = "s"; 
 	spots[2].Name = "bcd"; spots[2].Introduction = "ss";
 	spots[0].Name = "crrrw"; spots[0].Introduction = "sssw";
-	arcs[0].w = 1; arcs[0].v = 0; arcs[0].info = 5; arcs[0].level = 100;
+	arcs[0].w = 1; arcs[0].v = 0; arcs[0].info = 55; arcs[0].level = 100;
 	arcs[1].w = 1; arcs[1].v = 2; arcs[1].info = 15; arcs[1].level = 120;
-	CreatUDGGraph(G, spots, 3, arcs, 2);
+	arcs[2].w = 0; arcs[2].v = 2; arcs[2].info = 5; arcs[2].level = 120;
+	CreatUDGGraph(G, spots, 3, arcs, 3);
 	myprint(G);
 	//AddSpot(G);
 	puts("\nadd");
 	myprint(G);
 	PrintSymbol(G);
 	int cnt = 10;
+	Dijskra* dij;
+	//AddSpot(G);
 	while (cnt--) {
-		ReviseEdge(G);
-		myprint(G);
+
+		puts("--");
+		int start,des;
+		scanf("%d %d", &start,&des);
+		if (des >= G.n || start >= G.n || start < 0 || des < 0) {
+			printf("目的地或出发地编号超出最大编号%d或小于0,查找失败\n", G.n - 1);
+		}
+		else {
+			for (int i = 0; i < G.n; i++) {
+				G.tags[i] = 0;
+			}
+			int * path = (int*)calloc(G.e , sizeof(int));
+			int len = 0, sum = 0;
+			FindAllRoad(G, start, des, path, len, sum);
+			/*ShortestRoad(G, start, dij);
+			MostAppealingRoad(G, start, dij);
+			OutputRoad(G, dij, des);
+			printf("\nLevel=%d\n", dij[des].info);*/
+
+		}
 	}
 	
 	return 0;
