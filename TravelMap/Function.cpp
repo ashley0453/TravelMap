@@ -366,9 +366,30 @@ Status ShortestRoad(ALGraph G, int Start, Dijskra*& dij)
     return OK;
 }
 
-Status MostAppealingRoad(ALGraph G, int Start, Dijskra*& dij)
+Status MostAppealingRoad(ALGraph G, int start,int des,int *CurrentPath,int*path,int CurrentLen,int &len,int CurrentLevel,int &MaxLevel)
 {
-    return OK;
+    if (des >= G.n || start >= G.n || start < 0 || des < 0) {
+        printf("目的地或出发地编号超出最大编号%d或小于0,查找失败\n", G.n - 1);
+        return ERROR;
+    }
+    G.tags[start] = VISITED;
+    path[CurrentLen] = start;
+    CurrentLen++;
+    if (start == des && CurrentLen >= 0&&MaxLevel<CurrentLevel) {    
+        MaxLevel = CurrentLevel;
+        path = CurrentPath;
+        len = CurrentLen;
+        G.tags[start] = UNVISITED;
+        return true;
+    }
+    for (AdjSpotNodeP p = G.Spots[start].FirstSpot; p; p = p->NextSpot) {
+        if (G.tags[p->SpotSymbol] == UNVISITED) {
+            MostAppealingRoad(G, p->SpotSymbol, des,CurrentPath,path,CurrentLen,len,CurrentLevel+p->Level,MaxLevel);
+        }
+    }
+    G.tags[start] = UNVISITED;
+    CurrentLen--;
+    return false;
 }
 
 bool FindAllRoad(ALGraph G, int start, int des, int *path,int len, int& sum)

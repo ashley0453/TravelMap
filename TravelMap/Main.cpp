@@ -19,10 +19,10 @@ int main() {
 	spots[1].Name = "a"; spots[1].Introduction = "s"; 
 	spots[2].Name = "bcd"; spots[2].Introduction = "ss";
 	spots[0].Name = "crrrw"; spots[0].Introduction = "sssw";
-	arcs[0].w = 1; arcs[0].v = 0; arcs[0].info = 55; arcs[0].level = 100;
-	arcs[1].w = 1; arcs[1].v = 2; arcs[1].info = 15; arcs[1].level = 120;
+	arcs[0].w = 1; arcs[0].v = 0; arcs[0].info = 55; arcs[0].level = 20;
+	arcs[1].w = 1; arcs[1].v = 2; arcs[1].info = 15; arcs[1].level = 80;
 	arcs[2].w = 0; arcs[2].v = 2; arcs[2].info = 5; arcs[2].level = 120;
-	CreatUDGGraph(G, spots, 3, arcs, 3);
+	CreatUDGGraph(G, spots, 3, arcs, 2+1);
 	myprint(G);
 	//AddSpot(G);
 	puts("\nadd");
@@ -43,9 +43,15 @@ int main() {
 			for (int i = 0; i < G.n; i++) {
 				G.tags[i] = 0;
 			}
-			int * path = (int*)calloc(G.e , sizeof(int));
-			int len = 0, sum = 0;
-			FindAllRoad(G, start, des, path, len, sum);
+			int* path = (int*)calloc(G.e , sizeof(int));
+			int* Currentpath = (int*)calloc(G.e, sizeof(int));
+			int len = 0, MaxLevel = 0;
+			MostAppealingRoad(G,start,des,Currentpath,path,0,len,0,MaxLevel);
+			printf("最美路线指数为%d:\n", MaxLevel);
+			for (int i = 0; i < len; i++) {
+				printf("%d:%s->", G.Spots[path[i]].Symbol, G.Spots[path[i]].Name);
+			}
+			//FindAllRoad(G, start, des, path, len, sum);
 			/*ShortestRoad(G, start, dij);
 			MostAppealingRoad(G, start, dij);
 			OutputRoad(G, dij, des);

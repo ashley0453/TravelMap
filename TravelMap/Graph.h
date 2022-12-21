@@ -69,7 +69,7 @@ Status ReviseEdge(ALGraph& G);
 Status SpotIntroduce(ALGraph G, int k);
 
 Status ShortestRoad(ALGraph G, int Start, Dijskra*& dij);
-Status MostAppealingRoad(ALGraph G, int Start, Dijskra*& dij);
+Status MostAppealingRoad(ALGraph G, int start, int des, int* CurrentPath, int* path, int CurrentLen, int& len, int CurrentLevel, int& MaxLevel);
 bool FindAllRoad(ALGraph G, int start, int destination, int* path, int len, int& sum);
 void OutputRoad(ALGraph G, Dijskra* dist, int Destinatin);
 
