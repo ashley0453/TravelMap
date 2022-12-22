@@ -64,7 +64,11 @@ int NextAdjSpot(ALGraph G, int k, AdjSpotNodeP& p);
 void PrintSymbol(ALGraph G);
 
 bool IsDirectConnected(ALGraph G, int i, int j);
+bool IsReach(ALGraph G, int i, int j);
 bool IsReachable(ALGraph G, int i, int j);
+void SetTags(ALGraph& G);
+
+
 Status CreatUDGGraph(ALGraph& G, SpotNode* Spots, int n, ArcInfo* arce, int e);
 Status AddSpot(ALGraph& G);
 Status AddEdge(ALGraph& G);

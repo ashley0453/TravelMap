@@ -55,6 +55,13 @@ bool IsDirectConnected(ALGraph G, int i, int j)
     return false;
 }
 
+bool IsReach(ALGraph G, int i, int j)
+{
+    bool found = IsReachable(G, i, j);
+    SetTags(G);
+    return found;
+}
+
 bool IsReachable(ALGraph G, int i, int j)
 {
     AdjSpotNodeP p;
@@ -69,6 +76,13 @@ bool IsReachable(ALGraph G, int i, int j)
         }
     }
     return Found;
+}
+
+void SetTags(ALGraph& G)
+{
+    for (int i = 0; i < G.n; i++) {
+        G.tags[i] = 0;
+    }
 }
 
 Status CreatUDGGraph(ALGraph& G, SpotNode* Spots, int n, ArcInfo* arce, int e)
@@ -451,7 +465,7 @@ void Swap(int x, int y, int* num)
 
 Status Perm(int left, int CntOfNum, int* num, int& CntOfPerm, Permutations*& result)
 {
-    if (left == CntOfNum) {//当p==q说明到了最后一个元素 ，输出        
+    if (left == CntOfNum) {//当最左边元素序号与最后一个重合，说明到了最后一个元素 ，输出        
         for (int j = 0; j <= CntOfNum; j++) {
             result[CntOfPerm].path[j] = num[j];
         }
@@ -459,7 +473,7 @@ Status Perm(int left, int CntOfNum, int* num, int& CntOfPerm, Permutations*& res
         printf("\n");
     }
     else {     
-        for (int i = left; i <= CntOfNum; i++) {//对从下标从p到q的元素进行全排列
+        for (int i = left; i <= CntOfNum; i++) {//对从下标从left到最右边的元素进行全排列
             Swap(left, i, num);
             Perm(left + 1, CntOfNum, num, CntOfPerm, result);
             Swap(left, i, num);
@@ -473,10 +487,25 @@ Status SuitableRoad(ALGraph G, int start, int des)
     int cnt;
     printf("请输入您准备途径的景点的个数\n");
     scanf("%d", &cnt);
+    if (cnt <= 0) {
+        printf("输入数据不合法，至少途径1个点\n");
+        return ERROR;
+    }
+    if (cnt >= G.n) {
+        printf("途径个数超过总景点数目\n");
+        return ERROR;
+    }
     int* num = (int*)calloc(cnt, sizeof(int));
     for (int i = 0; i < cnt; i++) {
         printf("第%d个数字，请输入想途径的景点的编号 ", i + 1);
         scanf("%d", &num[i]);
+    }
+    bool Reach = IsReach(G, start, des);
+    for (int i = 0; i < cnt; i++) {
+        if (IsReach(G, start, num[i]) == false||Reach == false) {
+            printf("存在两点之间不联通，无法找到合适路线\n");
+            return ERROR;
+        }
     }
     long long int FactResult = Fact(cnt);
     Permutations* per = (Permutations*)calloc(FactResult, sizeof(Permutations));
@@ -519,7 +548,6 @@ Status SuitableRoad(ALGraph G, int start, int des)
     for (int i = 0; i < cnt - 1; i++) {
         printf("\n第%d段：", 2 + i);
         OutputRoad(G, dij[per[number].path[i]], per[number].path[i + 1]);
-        printf("\n");
     }
     printf("\n第%d段：", cnt + 1);
     OutputRoad(G, dij[per[number].path[cnt - 1]], des);
