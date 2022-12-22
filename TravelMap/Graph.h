@@ -43,15 +43,20 @@ typedef struct ALGraph {
 } ALGraph;
 
 typedef struct ArcInfo {
-    int v, w;   //边的端点
-    int info;   //对带权图，为权值，此处为距离
+    int v, w;   
+    int info;   
     int level;
 }ArcInfo;   //存储边信息
 
 typedef struct Dijskra {
     int PreNode;
     int info;
-}Dijskra;
+}Dijskra;//迪杰斯特拉算法中储存前序节点与权值
+
+typedef struct Permutations {
+    int* path;
+    int info;
+}Permutations;//储存途径路径的全排列以及对应的权值
 
 int FirstAdjSpot(ALGraph G, int k, AdjSpotNodeP& p);
 int NextAdjSpot(ALGraph G, int k, AdjSpotNodeP& p);
@@ -72,6 +77,11 @@ Status ShortestRoad(ALGraph G, int Start, Dijskra*& dij);
 Status MostAppealingRoad(ALGraph G, int start, int des, int* CurrentPath, int* path, int CurrentLen, int& len, int CurrentLevel, int& MaxLevel);
 bool FindAllRoad(ALGraph G, int start, int destination, int* path, int len, int& sum);
 void OutputRoad(ALGraph G, Dijskra* dist, int Destinatin);
+
+long long int Fact(int i);
+void Swap(int x, int y, int* num);
+Status Perm(int left, int right, int* num, int& cnt, Permutations*& result);
+Status SuitableRoad(ALGraph G, int start, int des);//用于查找当含有指定点位途径时的最短路径
 
 void Clearbuffer();//清除缓冲区
 

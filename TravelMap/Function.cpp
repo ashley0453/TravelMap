@@ -432,6 +432,101 @@ void OutputRoad(ALGraph G, Dijskra* dij, int Destinatin)
     printf("%-2d:%-6s->", G.Spots[Destinatin].Symbol, G.Spots[Destinatin].Name);
 }
 
+long long int Fact(int i)
+{
+    if (i == 0||i==1) {
+        return 1;
+    }
+    else {
+        return i * Fact(i - 1);
+    }
+}
+
+void Swap(int x, int y, int* num)
+{
+    int t = num[x];
+    num[x] = num[y];
+    num[y] = t;
+}
+
+Status Perm(int left, int CntOfNum, int* num, int& CntOfPerm, Permutations*& result)
+{
+    if (left == CntOfNum) {//当p==q说明到了最后一个元素 ，输出        
+        for (int j = 0; j <= CntOfNum; j++) {
+            result[CntOfPerm].path[j] = num[j];
+        }
+        CntOfPerm = CntOfPerm + 1;
+        printf("\n");
+    }
+    else {     
+        for (int i = left; i <= CntOfNum; i++) {//对从下标从p到q的元素进行全排列
+            Swap(left, i, num);
+            Perm(left + 1, CntOfNum, num, CntOfPerm, result);
+            Swap(left, i, num);
+        }
+    }
+    return OK;
+}
+
+Status SuitableRoad(ALGraph G, int start, int des)
+{
+    int cnt;
+    printf("请输入您准备途径的景点的个数\n");
+    scanf("%d", &cnt);
+    int* num = (int*)calloc(cnt, sizeof(int));
+    for (int i = 0; i < cnt; i++) {
+        printf("第%d个数字，请输入想途径的景点的编号 ", i + 1);
+        scanf("%d", &num[i]);
+    }
+    long long int FactResult = Fact(cnt);
+    Permutations* per = (Permutations*)calloc(FactResult, sizeof(Permutations));
+    if (per == NULL) {
+        return OVERFLOW;
+    }
+    for (int i = 0; i < FactResult; i++) {
+        per[i].path = (int*)calloc(cnt, sizeof(int));
+        if (NULL == per[i].path) {
+            return OVERFLOW;
+        }
+    }
+    int Time = 0;//表示符合全部排列的次数
+    Perm(0, cnt - 1, num, Time, per);
+    Dijskra** dij = (Dijskra**)calloc(G.n,sizeof(Dijskra*));
+    if (dij == NULL) {
+        return OVERFLOW;
+    }
+    ShortestRoad(G, start, dij[start]);
+    for (int i = 0; i < cnt; i++) {
+        ShortestRoad(G, num[i], dij[num[i]]);
+    }
+    for (int i = 0; i < FactResult; i++) {
+        per[i].info += dij[start][per[i].path[0]].info;
+        for (int j = 0; j < cnt-1; j++) {
+            per[i].info += dij[per[i].path[j]][per[i].path[j+1]].info;
+        }
+        per[i].info += dij[per[i].path[cnt-1]][des].info;
+    }
+    int MinDistence = INFINITY, number = 0;
+    for (int i = 0; i < FactResult; i++) {
+        if (MinDistence > per[i].info) {
+            MinDistence = per[i].info;
+            number = i;
+        }
+    }
+    printf("找到符合要求的路线如下：\n");
+    printf("第1段：");
+    OutputRoad(G, dij[start], per[number].path[0]);
+    for (int i = 0; i < cnt - 1; i++) {
+        printf("\n第%d段：", 2 + i);
+        OutputRoad(G, dij[per[number].path[i]], per[number].path[i + 1]);
+        printf("\n");
+    }
+    printf("\n第%d段：", cnt + 1);
+    OutputRoad(G, dij[per[number].path[cnt - 1]], des);
+    printf("\n对应的权值为%d\n", per[number].info);
+    return OK;
+}
+
 void Clearbuffer()
 {
     char ch;

@@ -11,7 +11,7 @@ void myprint(ALGraph G) {
 int main() {
 	puts("Success");
 	ALGraph G;
-	SpotNode spots[3];
+	SpotNode spots[4];
 	for (int i = 0; i < 3; i++) {
 		spots[i].Symbol = i;
 	}
@@ -40,17 +40,18 @@ int main() {
 			printf("目的地或出发地编号超出最大编号%d或小于0,查找失败\n", G.n - 1);
 		}
 		else {
-			for (int i = 0; i < G.n; i++) {
+			SuitableRoad(G, start, des);
+			/*for (int i = 0; i < G.n; i++) {
 				G.tags[i] = 0;
-			}
-			int* path = (int*)calloc(G.e , sizeof(int));
-			int* Currentpath = (int*)calloc(G.e, sizeof(int));
-			int len = 0, MaxLevel = 0;
-			MostAppealingRoad(G,start,des,Currentpath,path,0,len,0,MaxLevel);
-			printf("最美路线指数为%d:\n", MaxLevel);
-			for (int i = 0; i < len; i++) {
-				printf("%d:%s->", G.Spots[path[i]].Symbol, G.Spots[path[i]].Name);
-			}
+			}*/
+			//int* path = (int*)calloc(G.e , sizeof(int));
+			//int* Currentpath = (int*)calloc(G.e, sizeof(int));
+			//int len = 0, MaxLevel = 0;
+			//MostAppealingRoad(G,start,des,Currentpath,path,0,len,0,MaxLevel);
+			//printf("最美路线指数为%d:\n", MaxLevel);
+			//for (int i = 0; i < len; i++) {
+				//printf("%d:%s->", G.Spots[path[i]].Symbol, G.Spots[path[i]].Name);
+			//}
 			//FindAllRoad(G, start, des, path, len, sum);
 			/*ShortestRoad(G, start, dij);
 			MostAppealingRoad(G, start, dij);
