@@ -1,4 +1,5 @@
 #include"Graph.h"
+#include"User.h"
 void myprint(ALGraph G) {
 	for (int i = 0; i < G.n; i++) {
 		printf("%2d.%-6s:%-10s->", G.Spots[i].Symbol, G.Spots[i].Name, G.Spots[i].Introduction);
@@ -23,6 +24,7 @@ void CreatVexAndArc(SpotNode* spots, ArcInfo* arcs) {
 
 }
 int main() {
+	initgraph(1200, 800);
 	puts("Success");
 	ALGraph G;
 	SpotNode spots[4];
@@ -33,37 +35,37 @@ int main() {
 	CreatVexAndArc(spots, arcs);
 	CreatUDGGraph(G, spots, 4, arcs, 6);
 	myprint(G);
-	PrintSymbol(G);
-	int cnt = 10;
+	int cnt = 4;
 	Dijskra* dij;
-	//AddSpot(G);
+	AddSpot(G);
+	myprint(G);
 	while (cnt--) {
-
+		//SpotIntroduce(G);
 		puts("--");
 		int start,des;
-		scanf("%d %d", &start,&des);
+		start = MyInpuSymbolNum("请输入道路起点编号");
+		des = MyInpuSymbolNum("请输入道路终点编号");
 		if (des >= G.n || start >= G.n || start < 0 || des < 0) {
 			printf("目的地或出发地编号超出最大编号%d或小于0,查找失败\n", G.n - 1);
 		}
 		else {
 			for (int i = 0; i < G.n; i++)G.tags[i] = 0;
-			SuitableRoad(G, start, des);
+			//SuitableRoad(G, start, des);
 			/*for (int i = 0; i < G.n; i++) {
 				G.tags[i] = 0;
 			}*/
-			//int* path = (int*)calloc(G.e , sizeof(int));
-			//int* Currentpath = (int*)calloc(G.e, sizeof(int));
-			//int len = 0, MaxLevel = 0;
-			//MostAppealingRoad(G,start,des,Currentpath,path,0,len,0,MaxLevel);
-			//printf("最美路线指数为%d:\n", MaxLevel);
-			//for (int i = 0; i < len; i++) {
-				//printf("%d:%s->", G.Spots[path[i]].Symbol, G.Spots[path[i]].Name);
-			//}
+			int* path = (int*)calloc(G.n, sizeof(int));
+			int len = 0, sum = 0;
+			
 			//FindAllRoad(G, start, des, path, len, sum);
-			/*ShortestRoad(G, start, dij);
-			MostAppealingRoad(G, start, dij);
-			OutputRoad(G, dij, des);
-			printf("\nLevel=%d\n", dij[des].info);*/
+			ShortestRoad(G, start, dij);
+			//FindAppealingRoad(G);
+			char road[500] = "\0";
+			char t[50] = "\0";
+			OutputRoad(G, dij, des, road);
+			sprintf(t,"\nLevel=%d\n", dij[des].info);
+			strcat(road, t);
+			MessageBox(GetHWnd(), road, "查找结果", MB_OK);
 
 		}
 	}

@@ -61,8 +61,6 @@ typedef struct Permutations {
 int FirstAdjSpot(ALGraph G, int k, AdjSpotNodeP& p);
 int NextAdjSpot(ALGraph G, int k, AdjSpotNodeP& p);
 
-void PrintSymbol(ALGraph G);
-
 bool IsDirectConnected(ALGraph G, int i, int j);
 bool IsReach(ALGraph G, int i, int j);
 bool IsReachable(ALGraph G, int i, int j);
@@ -75,12 +73,14 @@ Status AddEdge(ALGraph& G);
 Status RemoveEdge(ALGraph& G);
 Status ReviseSpot(ALGraph& G);
 Status ReviseEdge(ALGraph& G);
-Status SpotIntroduce(ALGraph G, int k);
+Status SpotIntroduce(ALGraph G);
 
 Status ShortestRoad(ALGraph G, int Start, Dijskra*& dij);
+void FindAppealingRoad(ALGraph G);
 Status MostAppealingRoad(ALGraph G, int start, int des, int* CurrentPath, int* path, int CurrentLen, int& len, int CurrentLevel, int& MaxLevel);
+void PrintAppealingRoad(ALGraph G, int* path, int length, int MaxLevel);
 bool FindAllRoad(ALGraph G, int start, int destination, int* path, int len, int& sum);
-void OutputRoad(ALGraph G, Dijskra* dist, int Destinatin);
+void OutputRoad(ALGraph G, Dijskra* dij, int Destinatin, char* Road);
 
 long long int Fact(int i);
 void Swap(int x, int y, int* num);
