@@ -61,26 +61,31 @@ typedef struct Permutations {
 int FirstAdjSpot(ALGraph G, int k, AdjSpotNodeP& p);
 int NextAdjSpot(ALGraph G, int k, AdjSpotNodeP& p);
 
-bool IsDirectConnected(ALGraph G, int i, int j);
-bool IsReach(ALGraph G, int i, int j);
+bool IsDirectConnected(ALGraph G, int i, int j);//判断两个景点是否可以直接相连接
+
+bool IsReach(ALGraph G, int i, int j);//作为判断是否可到达的入口
 bool IsReachable(ALGraph G, int i, int j);
-void SetTags(ALGraph& G);
+void SetTags(ALGraph& G);//将图中的Tag给予重置
 
 
-Status CreatUDGGraph(ALGraph& G, SpotNode* Spots, int n, ArcInfo* arce, int e);
-Status AddSpot(ALGraph& G);
-Status AddEdge(ALGraph& G);
-Status RemoveEdge(ALGraph& G);
-Status ReviseSpot(ALGraph& G);
-Status ReviseEdge(ALGraph& G);
-Status SpotIntroduce(ALGraph G);
+Status CreatUDGGraph(ALGraph& G, SpotNode* Spots, int n, ArcInfo* arce, int e);//初始化图
+Status AddSpot(ALGraph& G);//加入新起点
+Status AddEdge(ALGraph& G);//加入新路
+Status RemoveEdge(ALGraph& G);//删除已有的边
+Status ReviseSpot(ALGraph& G);//修改现有景点的信息
+Status ReviseEdge(ALGraph& G);//修改现有边的信息
+Status SpotIntroduce(ALGraph G);//景区介绍
 
-Status ShortestRoad(ALGraph G, int Start, Dijskra*& dij);
-void FindAppealingRoad(ALGraph G);
+Status FindShortRoad(ALGraph G);
+Status ShortestRoad(ALGraph G, int Start, Dijskra*& dij);//寻找两点之间最短路径
+void OutputRoad(ALGraph G, Dijskra* dij, int Destinatin, char* Road);
+
+Status FindAppealingRoad(ALGraph G);//根据道路道路美丽评分去选择最美道路，该函数为入口
 Status MostAppealingRoad(ALGraph G, int start, int des, int* CurrentPath, int* path, int CurrentLen, int& len, int CurrentLevel, int& MaxLevel);
 void PrintAppealingRoad(ALGraph G, int* path, int length, int MaxLevel);
-bool FindAllRoad(ALGraph G, int start, int destination, int* path, int len, int& sum);
-void OutputRoad(ALGraph G, Dijskra* dij, int Destinatin, char* Road);
+
+bool FindAllRoad(ALGraph G, int start, int destination, int* path, int len, int& sum);//查找所有的路
+
 
 long long int Fact(int i);
 void Swap(int x, int y, int* num);
@@ -88,6 +93,6 @@ Status Perm(int left, int right, int* num, int& cnt, Permutations*& result);
 Status SuitableRoad(ALGraph G, int start, int des);//用于查找当含有指定点位途径时的最短路径
 
 void Clearbuffer();//清除缓冲区
-
-
+void DrawUI(ALGraph G);
+void CreatVexAndArc(SpotNode* spots, ArcInfo* arcs);
 #endif
