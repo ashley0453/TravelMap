@@ -1,3 +1,4 @@
+//图的操作的定义的实现
 #include "Graph.h"
 #include"User.h"
 int FirstAdjSpot(ALGraph G, int k, AdjSpotNodeP& p){
@@ -121,6 +122,9 @@ Status AddSpot(ALGraph& G)
 {
     int n = G.n;
     G.Spots = (SpotNode*)realloc(G.Spots,(G.n + 1)* sizeof(SpotNode));
+    if (G.Spots == NULL) {
+        return OVERFLOW;
+    }
     G.Spots[n].Symbol = n;
     G.Spots[n].FirstSpot = NULL;
     char *name = (char*)calloc(20,sizeof(char));
@@ -135,15 +139,15 @@ Status AddSpot(ALGraph& G)
     }
     InputBox(information, 20, "请输入您要添加的地点的介绍");
     G.Spots[n].Introduction = information;
-    int x = MyInpuSymbolNum("请输入一正整数表示添加景点的横坐标值\n附：左上角为（0，0）且比例尺为100米/格");
+    int x = MyInpuNum("请输入一正整数表示添加景点的横坐标值\n附：左上角为（0，0）且比例尺为100米/格");
     while (x < 0 || x>9) {
         MessageBox(GetHWnd(), "输入的值超出边界（0到9）", "警告", MB_ICONERROR | MB_OK);
-        x = MyInpuSymbolNum("请输入一正整数表示添加景点的横坐标值\n附：左上角为（0，0）且比例尺为100米/格");
+        x = MyInpuNum("请输入一正整数表示添加景点的横坐标值\n附：左上角为（0，0）且比例尺为100米/格");
     }
-    int y= MyInpuSymbolNum("请输入一正整数表示添加景点的纵坐标值\n附：左上角为（0，0）且比例尺为100米/格");
+    int y= MyInpuNum("请输入一正整数表示添加景点的纵坐标值\n附：左上角为（0，0）且比例尺为100米/格");
     while (y < 0 || y>9) {
         MessageBox(GetHWnd(), "输入的值超出边界（0到9）", "警告", MB_ICONERROR | MB_OK);
-        y = MyInpuSymbolNum("请输入一正整数表示添加景点的纵坐标值\n附：左上角为（0，0）且比例尺为100米/格");
+        y = MyInpuNum("请输入一正整数表示添加景点的纵坐标值\n附：左上角为（0，0）且比例尺为100米/格");
     }
     G.Spots[n].x = x; G.Spots[n].y = y;
     G.n++;  
@@ -157,8 +161,8 @@ Status AddEdge(ALGraph& G)
     char buf[1000] = "\0";
     sprintf(buf,"请输入想要添加的两条边的对应的编号，范围为0到%d", G.n - 1);
     MessageBox(GetHWnd(), buf, "提示", MB_OK);
-    i = MyInpuSymbolNum("请输入起点编号");
-    j = MyInpuSymbolNum("请输入终点编号");
+    i = MyInpuNum("请输入起点编号");
+    j = MyInpuNum("请输入终点编号");
     if (i < 0 || j < 0 || i >= G.n || j >= G.n) {
         MessageBox(GetHWnd(), "您输入的不是一个合法的数字,返回主菜单", "提示", MB_OK | MB_ICONERROR);
         return false;
@@ -174,7 +178,7 @@ Status AddEdge(ALGraph& G)
     int info=-1, level=-1;
     
     while (1) {
-        info = MyInpuSymbolNum("请输入一正整数表示该条路程度，单位100米");
+        info = MyInpuNum("请输入一正整数表示该条路程度，单位100米");
         if (info <= 0) {
             MessageBox(GetHWnd(), "您输入的不是一个合法的数字，请输入正整数", "提示", MB_OK | MB_ICONERROR);
         }
@@ -184,7 +188,7 @@ Status AddEdge(ALGraph& G)
     }
     
     while (1) {
-        level = MyInpuSymbolNum("请输入一整数表示该条路风景美丽程度（最低0分满分10分)");
+        level = MyInpuNum("请输入一整数表示该条路风景美丽程度（最低0分满分10分)");
         if (level < 0||level>10) {
             MessageBox(GetHWnd(), "您输入的不是一个合法的数字,数字范围0-10", "提示", MB_OK | MB_ICONERROR);
         }
@@ -213,8 +217,8 @@ Status RemoveEdge(ALGraph& G)
     char buf[1000] = "\0";
     sprintf(buf, "请输入想要删除的两条边的对应的编号，范围为0到%d,使用空格隔开 ", G.n - 1);
     MessageBox(GetHWnd(), buf, "提示", MB_OK);
-    i = MyInpuSymbolNum("请输入道路起点编号");
-    j = MyInpuSymbolNum("请输入道路终点编号");
+    i = MyInpuNum("请输入道路起点编号");
+    j = MyInpuNum("请输入道路终点编号");
     if (i < 0 || j < 0 || i >= G.n || j >= G.n) {
         MessageBox(GetHWnd(), "您输入的不是一个合法的数字,返回主菜单", "提示", MB_OK | MB_ICONERROR);
         return false;
@@ -258,15 +262,15 @@ Status ReviseSpot(ALGraph& G)
     int operate, num;
     char* New;
     New = (char*)malloc(100 * sizeof(char));  
-    operate = MyInpuSymbolNum("请输入对应的操作码\n1、修改景点名称  2、修改景点简介 \n");
+    operate = MyInpuNum("请输入对应的操作码\n1、修改景点名称  2、修改景点简介 \n");
     while (operate != 1 && operate != 2) {
         MessageBox(GetHWnd(), "操作符有误，请重新输入", "提示", MB_OK | MB_ICONERROR);
-        operate = MyInpuSymbolNum("请输入正确的对应的操作码");
+        operate = MyInpuNum("请输入正确的对应的操作码");
     }
-    num = MyInpuSymbolNum("请输入想要修改的景区的编号");
+    num = MyInpuNum("请输入想要修改的景区的编号");
     while (num < 0 || num >= G.n) {
         MessageBox(GetHWnd(), "景点符号不合法，请重新输入", "提示", MB_OK | MB_ICONERROR);
-        num = MyInpuSymbolNum("请输入想要修改的景区的编号");
+        num = MyInpuNum("请输入想要修改的景区的编号");
     }
     if (1 == operate) {           //修改名称      
         InputBox(New, 100, "请输入修改后的景点名称");
@@ -284,27 +288,27 @@ Status ReviseEdge(ALGraph& G)
 {
     int operate, NewData, SpotOne, SpotTwo;
     AdjSpotNodeP p;
-    operate = MyInpuSymbolNum("请输入对应的操作码\n1为修改道路距离  2为修改道路美丽指数");
+    operate = MyInpuNum("请输入对应的操作码\n1为修改道路距离  2为修改道路美丽指数");
     while (operate != 1 && operate != 2) {
         MessageBox(GetHWnd(), "操作符有误，请重新输入", "提示", MB_OK | MB_ICONERROR);
-        operate = MyInpuSymbolNum("请输入对应的操作码\n1为修改道路距离  2为修改道路美丽指数");
+        operate = MyInpuNum("请输入对应的操作码\n1为修改道路距离  2为修改道路美丽指数");
     }
     char buf[1000] = "\0";
     sprintf(buf, "请输入想要修改的路的两个点的对应的编号，范围为0到%d", G.n - 1);
     MessageBox(GetHWnd(), buf, "提示", MB_OK);
-    SpotOne = MyInpuSymbolNum("请输入道路起点编号");
-    SpotTwo = MyInpuSymbolNum("请输入道路终点编号");
+    SpotOne = MyInpuNum("请输入道路起点编号");
+    SpotTwo = MyInpuNum("请输入道路终点编号");
     while (SpotOne < 0 || SpotOne >= G.n || SpotTwo < 0||SpotTwo>=G.n) {
         MessageBox(GetHWnd(), "您输入的不是一个合法的数字", "提示", MB_OK | MB_ICONERROR);
-        SpotOne = MyInpuSymbolNum("请输入起点编号");
-        SpotTwo = MyInpuSymbolNum("请输入道路编号");
+        SpotOne = MyInpuNum("请输入起点编号");
+        SpotTwo = MyInpuNum("请输入道路编号");
     }
     if (IsDirectConnected(G, SpotOne, SpotTwo) == false) {
         MessageBox(GetHWnd(), "图中不存在该条路，无法修改！", "提示", MB_OK | MB_ICONERROR);
         return ERROR;
     }
     if (1 == operate) {           //修改长度    
-        NewData = MyInpuSymbolNum("请输入修改后的道路的长度，单位100米");
+        NewData = MyInpuNum("请输入修改后的道路的长度，单位100米");
         for (p = G.Spots[SpotOne].FirstSpot; p; p = p->NextSpot) {
             if (p->SpotSymbol == SpotTwo) {
                 p->Distence = NewData;
@@ -320,7 +324,7 @@ Status ReviseEdge(ALGraph& G)
     }
     else {             //修改美丽指数
         while (true) {
-            NewData = MyInpuSymbolNum("请输入一整数表示修改后的道路的美丽程度（最低0最大10）");
+            NewData = MyInpuNum("请输入一整数表示修改后的道路的美丽程度（最低0最大10）");
             if (NewData >= 0 && NewData < 10) {
                 break;
             }
@@ -347,7 +351,7 @@ Status ReviseEdge(ALGraph& G)
 
 Status SpotIntroduce(ALGraph G)
 {
-    int k = MyInpuSymbolNum("请输入想要查看的景点编号");
+    int k = MyInpuNum("请输入想要查看的景点编号");
     if (k < 0 ||k >= G.n) {
         MessageBox(GetHWnd(), "您输入的不是一个合法的数字,返回主菜单", "提示", MB_OK | MB_ICONERROR);
         return false;
@@ -365,8 +369,8 @@ Status SpotIntroduce(ALGraph G)
 
 Status FindShortRoad(ALGraph G)
 {
-    int start = MyInpuSymbolNum("请输入出发地点编号");
-    int des = MyInpuSymbolNum("请输入目的地编号");
+    int start = MyInpuNum("请输入出发地点编号");
+    int des = MyInpuNum("请输入目的地编号");
     Dijskra* dij;
     if (des >= G.n || start >= G.n || start < 0 || des < 0 || start == des) {
         MessageBox(GetHWnd(), "您输入的出发地或目的地编号有误，查找失败", "提示", MB_OK | MB_ICONERROR);
@@ -379,11 +383,16 @@ Status FindShortRoad(ALGraph G)
     else {
         char* road = (char*)calloc(2000, sizeof(char));
         char* temp = (char*)calloc(200, sizeof(char));
+        if (road == NULL || temp == NULL) {
+            return OVERFLOW;
+        }
+        SetTags(G);
         ShortestRoad(G, start, dij);
         OutputRoad(G, dij, des, road);
         sprintf(temp, "\n该路线总长度为%d00米", dij[des].info);
         strcat(road, temp);
         MessageBox(GetHWnd(), road, "查找结果", MB_OK);
+        SetTags(G);
         free(road);
         free(temp);
     }
@@ -393,6 +402,9 @@ Status FindShortRoad(ALGraph G)
 Status ShortestRoad(ALGraph G, int Start, Dijskra*& dij)
 {
     dij = (Dijskra*)calloc(G.n, sizeof(Dijskra));
+    if (dij == NULL) {
+        return OVERFLOW;
+    }
     for (int i = 0; i < G.n; i++) {
         G.tags[i] = UNSELECTED;
         dij[i].info = INFINITY;
@@ -428,8 +440,8 @@ Status FindAppealingRoad(ALGraph G)
     int* path = (int*)calloc(G.e, sizeof(int));
     int* Currentpath = (int*)calloc(G.e, sizeof(int));
     int len = 0, MaxLevel = 0;
-    int start = MyInpuSymbolNum("请输入起点景区编号");
-    int des = MyInpuSymbolNum("请输入终点景区编号");
+    int start = MyInpuNum("请输入起点景区编号");
+    int des = MyInpuNum("请输入终点景区编号");
     if (des >= G.n || start >= G.n || start < 0 || des < 0||des==start) {
         MessageBox(GetHWnd(), "您输入的出发地或目的地编号有误，查找失败", "提示", MB_OK | MB_ICONERROR);
         return ERROR;
@@ -437,6 +449,7 @@ Status FindAppealingRoad(ALGraph G)
     SetTags(G);
     MostAppealingRoad(G, start, des, Currentpath, path, 0, len, 0, MaxLevel);
     PrintAppealingRoad(G, path, len, MaxLevel);
+    return OK;
 }
 
 Status MostAppealingRoad(ALGraph G, int start,int des,int *CurrentPath,int*path,int CurrentLen,int &len,int CurrentLevel,int &MaxLevel)
@@ -481,7 +494,7 @@ void PrintAppealingRoad(ALGraph G, int* path, int length, int MaxLevel)
     free(Temp);
 }
 
-bool FindAllRoad(ALGraph G, int start, int des, int *path,int len, int& sum)
+Status FindAllRoad(ALGraph G, int start, int des, int *path,int len, int& sum)
 {
     if (des >= G.n || start >= G.n || start < 0 || des < 0) {
         MessageBox(GetHWnd(), "您输入的出发地或目的地编号有误，查找失败", "提示", MB_OK | MB_ICONERROR);
@@ -571,7 +584,7 @@ Status Perm(int left, int CntOfNum, int* num, int& CntOfPerm, Permutations*& res
 
 Status SuitableRoad(ALGraph G, int start, int des)
 {
-    int cnt = MyInpuSymbolNum("请输入您准备途径的景点的个数（最多3个）");
+    int cnt = MyInpuNum("请输入您准备途径的景点的个数（最多3个）");
     if (cnt <= 0) {
         MessageBox(GetHWnd(), "至少途径一个点", "提示", MB_OK | MB_ICONERROR);
         return ERROR;
@@ -582,7 +595,7 @@ Status SuitableRoad(ALGraph G, int start, int des)
     }//判断数据合法
     int* num = (int*)calloc(cnt, sizeof(int));
     for (int i = 0; i < cnt; i++) {
-        num[i] = MyInpuSymbolNum("请输入道路编号");
+        num[i] = MyInpuNum("请输入道路编号");
     }
     bool Reach = IsReach(G, start, des);
     for (int i = 0; i < cnt; i++) {

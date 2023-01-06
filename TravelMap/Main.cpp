@@ -1,3 +1,4 @@
+//Main函数 页面的打印与用户操作
 #include"Graph.h"
 #include"User.h"
 char* Title = "欢迎使用校园导览";
@@ -58,8 +59,8 @@ int main() {
 					FindAppealingRoad(G);
 				}
 				else if (msg.x >= 750 && msg.x <= 850 + width && msg.y >= 20 + 25 * 9 + high * 9 - 3 && msg.y <= 20 + 25 * 9 + high * 10 + 3) {
-					int start = MyInpuSymbolNum("请输入起点编号");
-					int des = MyInpuSymbolNum("请输入终点编号");
+					int start = MyInpuNum("请输入起点编号");
+					int des = MyInpuNum("请输入终点编号");
 					int* path = (int*)calloc(G.n, sizeof(int));
 					int sum = 0;
 					if (des >= G.n || start >= G.n || start < 0 || des < 0 || des == start) {
@@ -70,8 +71,8 @@ int main() {
 					FindAllRoad(G, start, des, path, 0, sum);
 				}
 				else if (msg.x >= 750 && msg.x <= 850 + width && msg.y >= 20 + 25 * 10 + high * 10 - 3 && msg.y <= 20 + 25 * 10 + high * 11 + 3) {
-					int start = MyInpuSymbolNum("请输入起点编号");
-					int des = MyInpuSymbolNum("请输入终点编号");					
+					int start = MyInpuNum("请输入起点编号");
+					int des = MyInpuNum("请输入终点编号");					
 					if (des >= G.n || start >= G.n || start < 0 || des < 0 || des == start) {
 						MessageBox(GetHWnd(), "您输入的出发地或目的地编号有误，查找失败", "提示", MB_OK | MB_ICONERROR);
 						continue;
@@ -97,6 +98,8 @@ void DrawUI(ALGraph G) {
 		sprintf(ch, "%d:%s", G.Spots[i].Symbol, G.Spots[i].Name);
 		outtextxy(G.Spots[i].x * 60, G.Spots[i].y * 60, ch);
 	}
+	line(20, 500, 80,500);
+	outtextxy(20 + (60 - textwidth("100米")) / 2, 505, "100米");//比例尺
 	for (int i = 0; i < G.n; i++) {
 		for (AdjSpotNodeP p = G.Spots[i].FirstSpot; p; p = p->NextSpot) {
 			line(G.Spots[i].x * 60 + 30, G.Spots[i].y * 60 - 10, G.Spots[p->SpotSymbol].x * 60 + 30, G.Spots[p->SpotSymbol].y * 60 - 10);
@@ -110,6 +113,7 @@ void DrawUI(ALGraph G) {
 		rectangle(750, 20 + 25 * i + high * i - 3, 850 + width, 20 + 25 * i + high * (i + 1) + 3);
 		outtextxy(750 + (100 + width - textwidth(Menu[i - 1])) / 2, 20 + 25 * i + high * i, Menu[i - 1]);
 	}
+	
 	settextstyle(high*1.2, 0, _T("楷体"));
 	outtextxy(900, 580, "计科伏羲-3121005309-孙天一");
 	settextstyle(high, 0, _T("宋体"));
@@ -141,5 +145,5 @@ void CreatVexAndArc(SpotNode* spots, ArcInfo* arcs) {
 	arcs[9].w = 7; arcs[9].v = 8; arcs[9].info = 2; arcs[9].level = 7;
 	arcs[10].w = 8; arcs[10].v = 10; arcs[10].info = 1; arcs[10].level = 3;
 	arcs[11].w = 8; arcs[11].v = 9; arcs[11].info = 1; arcs[11].level = 7;
-	arcs[12].w = 3; arcs[12].v = 11; arcs[11].info = 12; arcs[11].level = 7;
+	arcs[12].w = 3; arcs[12].v = 11; arcs[12].info = 12; arcs[12].level = 7;
 }

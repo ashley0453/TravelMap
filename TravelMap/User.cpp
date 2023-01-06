@@ -1,9 +1,13 @@
+//数据输功能定义的实现
 #include "User.h"
 
-int MyInpuSymbolNum(char *String)
+int MyInpuNum(char *String)
 {
     HWND hwnd = GetHWnd();
     char *temp = (char*)calloc(10,sizeof(temp));
+    if (temp == NULL) {
+        return -1;
+    }
     int num = 0;
     while (true) {
         bool IsDigitNum = 1;       

@@ -1,3 +1,4 @@
+//自定义头文件 含有功能的定义
 #pragma once
 #ifndef GRAPH_H_INCLUDED
 #define GRAPH_H_INCLUDED
@@ -19,7 +20,6 @@ typedef int Status;
 #define OVERFLOW 0
 #define UNSELECTED 0
 #define SELECTED 1
-
 
 typedef enum { DG, DN, UDG, UDN } GraphKind;
 typedef struct SpotNode{
@@ -67,7 +67,6 @@ bool IsReach(ALGraph G, int i, int j);//作为判断是否可到达的入口
 bool IsReachable(ALGraph G, int i, int j);
 void SetTags(ALGraph& G);//将图中的Tag给予重置
 
-
 Status CreatUDGGraph(ALGraph& G, SpotNode* Spots, int n, ArcInfo* arce, int e);//初始化图
 Status AddSpot(ALGraph& G);//加入新起点
 Status AddEdge(ALGraph& G);//加入新路
@@ -84,8 +83,7 @@ Status FindAppealingRoad(ALGraph G);//根据道路道路美丽评分去选择最美道路，该函数
 Status MostAppealingRoad(ALGraph G, int start, int des, int* CurrentPath, int* path, int CurrentLen, int& len, int CurrentLevel, int& MaxLevel);
 void PrintAppealingRoad(ALGraph G, int* path, int length, int MaxLevel);
 
-bool FindAllRoad(ALGraph G, int start, int destination, int* path, int len, int& sum);//查找所有的路
-
+Status FindAllRoad(ALGraph G, int start, int destination, int* path, int len, int& sum);//查找所有的路
 
 long long int Fact(int i);
 void Swap(int x, int y, int* num);
